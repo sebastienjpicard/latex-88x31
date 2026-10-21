@@ -1,0 +1,33 @@
+#!/bin/sh
+# See LICENSE for copyright and license details.
+
+# Appearance
+BG=white
+FG=black
+SCALE=1     # 1x = 20pt
+FORMAT=png
+
+[ "$1" = -B ] && { BORDER='\draw[black,line width=1bp] (0.5,0.5) rectangle (87.5,30.5);'; shift; }
+[ "$#" -eq 1 ] || { echo "Usage: $(basename "$0") [-B] 'text, \$math\$' > out.png" >&2; exit 1; }
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+# 1bp = 1px at 72dpi
+cat > "$tmp/b.tex" <<EOF
+\documentclass[tikz]{standalone}
+\usepackage{adjustbox}
+\begin{document}
+\begin{tikzpicture}[x=1bp,y=1bp]
+  \fill[$BG] (0,0) rectangle (88,31);
+  $BORDER
+  \node[text=$FG,inner sep=0] at (44,15.5)
+    {\adjustbox{scale=\fpeval{2*$SCALE},max width=82bp,max height=25bp}{$1}};
+\end{tikzpicture}
+\end{document}
+EOF
+
+pdflatex -interaction=nonstopmode -halt-on-error -output-directory "$tmp" "$tmp/b.tex" > /dev/null ||
+    { grep -A 3 '^!' "$tmp/b.log" >&2; exit 1; }
+
+pdftoppm -r 72 -png -singlefile "$tmp/b.pdf" | magick - "$FORMAT:-"
