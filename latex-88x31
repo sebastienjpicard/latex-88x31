@@ -17,6 +17,7 @@ trap 'rm -rf "$tmp"' EXIT
 cat > "$tmp/b.tex" <<EOF
 \documentclass[tikz]{standalone}
 \usepackage{adjustbox}
+\usepackage{amssymb}
 \begin{document}
 \begin{tikzpicture}[x=1bp,y=1bp]
   \fill[$BG] (0,0) rectangle (88,31);

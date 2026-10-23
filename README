@@ -4,4 +4,4 @@ latex-88x31: LaTeX to 88x31 buttons
 Usage: ./latex-88x31 [-B] 'text, $math$' > out.png
 -B draws a 1px border. Oversized text shrinks to fit.
 
-Requirements: pdflatex (standalone, tikz, adjustbox), pdftoppm, magick.
+Requirements: pdflatex (standalone, tikz, adjustbox, amssymb), pdftoppm, magick.
